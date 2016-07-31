@@ -52,10 +52,9 @@ func Connex(pss string, target Target) (Pass){
 	conn, err := ssh.Dial("tcp", target.host+":22", config)
 	if err != nil {
 		return Pass{false, pss}
-	} else {
-		conn.Close()
-		return Pass{true, pss}
 	}
+	conn.Close()
+	return Pass{true, pss}
 }
 
 func main() {
@@ -74,7 +73,7 @@ func main() {
 	passChan := make(chan Pass)
 	for _, p := range passList {
 		go func(password string) {
-2			result := Connex(password, host, user)
+			result := Connex(password, target)
 			passChan<-result
 		}(p)
 	}
