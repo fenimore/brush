@@ -60,6 +60,10 @@ func Connex(pss string, target Target) (Pass){
 func main() {
 	// TODO: Add Usage if args are less that 3
 	args := os.Args[1:]
+	if len(args) != 3 {
+		fmt.Println("Help Message")
+		return
+	}
 	// Args: 1. host 2. user 3. wordlist
 	target := Target{args[0], args[1]}
 	wordList := args[2]
